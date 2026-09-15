@@ -164,6 +164,42 @@ Thanks to Ryan Volz this OOT module can also directly be installed as a Conda pa
 	- (Linux/macOS) `$CONDA_PREFIX/share/gr-lora_sdr/examples`
 	- (Windows) `%CONDA_PREFIX%\Library\share\gr-lora_sdr\examples`
 
+## IP over LoRa Example
+
+### Simulation
+
+Create Tunnels:
+
+```bash
+sudo ip tuntap add dev lora-tun0 mode tun user $USER
+sudo ip addr add dev lora-tun0 10.100.200.2
+sudo ip link set dev lora-tun0 mtu 1500
+sudo ip link set dev lora-tun0 up
+
+sudo ip tuntap add dev lora-tun1 mode tun user $USER
+sudo ip addr add dev lora-tun1 10.100.200.3
+sudo ip link set dev lora-tun1 mtu 1500
+sudo ip link set dev lora-tun1 up
+```
+
+Ping over `lora-tun0`:
+
+```bash
+ping 10.100.200.3 -I lora-tun0
+```
+
+Verify on `lora-tun1`:
+
+```bash
+sudo tcpdump -i lora-tun1
+```
+
+Cleanup:
+
+```bash
+sudo ip link del lora-tun0
+sudo ip link del lora-tun1
+```
    
 ## Frequent issues:  
 - Fail to `make` after pulling a new version from git
